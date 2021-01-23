@@ -69,7 +69,7 @@ public class EstimateService {
      * @param dto 見積もり依頼情報
      * @return 概算見積もり結果の料金
      */
-    public Integer getPrice(UserOrderDto dto) {
+    public Integer[] getPrice(UserOrderDto dto) {
         double distance = estimateDAO.getDistance(dto.getOldPrefectureId(), dto.getNewPrefectureId());
         // 小数点以下を切り捨てる
         int distanceInt = (int) Math.floor(distance);
@@ -92,8 +92,8 @@ public class EstimateService {
             priceForOptionalService = estimateDAO.getPricePerOptionalService(OptionalServiceType.WASHING_MACHINE.getCode());
         }
         System.out.print(priceForOptionalService);
-
-        return priceForDistance + pricePerTruck + priceForOptionalService;
+        Integer returnInt[] = {priceForDistance + pricePerTruck + priceForOptionalService,priceForDistance,pricePerTruck,priceForOptionalService};
+        return returnInt;
     }
 
     /**
