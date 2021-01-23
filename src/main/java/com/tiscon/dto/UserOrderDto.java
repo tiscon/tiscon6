@@ -124,9 +124,9 @@ public class UserOrderDto {
         this.washingMachineInstallation = washingMachineInstallation;
     }
 
-    public String getmovingDate() {
+    public String getMovingDate() {
         return movingDate;
     }
 
-    public void setmovingDate(String newAddress) { this.movingDate = movingDate; }
+    public void setMovingDate(String movingDate) { this.movingDate = movingDate; }
 }
