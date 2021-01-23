@@ -40,6 +40,11 @@
           <input type="hidden" name="email" id="email" th:value="*{email}"/>
         </tr>
         <tr>
+          <th>引っ越し日付</th>
+          <td><span th:text="*{tel}"></span></td>
+          <input type="hidden" name="date_str" id="date_str" th:value="*{date_str}"/>
+        </tr>
+        <tr>
           <th>転居元住所（都道府県）</th>
           <td>
             <span th:each="prefecture : ${prefectures}" th:text="${prefecture.prefectureName}" th:if="${prefecture.prefectureId}==*{oldPrefectureId}">東京</span>
