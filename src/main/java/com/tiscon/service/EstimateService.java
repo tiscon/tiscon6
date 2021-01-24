@@ -93,7 +93,9 @@ public class EstimateService {
         }
         System.out.print(priceForOptionalService);
 
-        return priceForDistance + pricePerTruck + priceForOptionalService;
+        double seasonCoefficient = estimateDAO.getSeasonCoefficient(dto.getMovingDate());
+
+        return (int)((priceForDistance + pricePerTruck) * seasonCoefficient + priceForOptionalService);
     }
 
     /**
