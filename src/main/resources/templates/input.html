@@ -34,6 +34,10 @@
           <input type="text" id="email" name="email" th:field="*{email}" class="form-control" value="test@test.com"/>
         </div>
         <div class="form-group">
+          <label for="email">引っ越し日</label>
+          <input type="date" id="movingDate" name="movingDate" th:field="*{movingDate}" class="form-control" value="2021-01-23"/>
+        </div>
+        <div class="form-group">
           <label for="oldPrefectureId">転居元住所（都道府県）</label>
           <select id="oldPrefectureId" name="oldPrefectureId" class="form-control">
             <option th:each="prefecture : ${prefectures}" th:value="${prefecture.prefectureId}" th:field="*{oldPrefectureId}">[[${prefecture.prefectureName}]]</option>

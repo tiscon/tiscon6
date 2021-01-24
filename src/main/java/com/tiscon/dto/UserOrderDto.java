@@ -24,6 +24,8 @@ public class UserOrderDto {
 
     private String washingMachine;
 
+    private String movingDate;
+
     private boolean washingMachineInstallation;
 
     public String getCustomerName() {
@@ -121,4 +123,10 @@ public class UserOrderDto {
     public void setWashingMachineInstallation(Boolean washingMachineInstallation) {
         this.washingMachineInstallation = washingMachineInstallation;
     }
+
+    public String getMovingDate() {
+        return movingDate;
+    }
+
+    public void setMovingDate(String movingDate) { this.movingDate = movingDate; }
 }

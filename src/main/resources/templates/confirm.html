@@ -54,6 +54,15 @@
           <input type="hidden" name="email" id="email" th:value="*{email}"/>
         </tr>
         <tr>
+          <th>引っ越し日
+            <a th:if="${#fields.hasErrors('movingDate')}">
+              <li class="text-danger small" th:each="err : ${#fields.errors('movingDate')}" th:text="${err}"></li>
+            </a>
+          </th>
+          <td><span th:text="*{movingDate}"></span></td>
+          <input type="hidden" name="movingDate" id="movingDate" th:value="*{movingDate}"/>
+        </tr>
+        <tr>
           <th>転居元住所（都道府県）
             <a th:if="${#fields.hasErrors('oldPrefectureId')}">
               <li class="text-danger small" th:each="err : ${#fields.errors('oldPrefectureId')}" th:text="${err}"></li>

@@ -9,6 +9,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Calendar;
 
 /**
  * 引越し見積もり機能においてDBとのやり取りを行うクラス。
@@ -37,8 +41,8 @@ public class EstimateDao {
      * @return 登録件数
      */
     public int insertCustomer(Customer customer) {
-        String sql = "INSERT INTO CUSTOMER(OLD_PREFECTURE_ID, NEW_PREFECTURE_ID, CUSTOMER_NAME, TEL, EMAIL, OLD_ADDRESS, NEW_ADDRESS)"
-                + " VALUES(:oldPrefectureId, :newPrefectureId, :customerName, :tel, :email, :oldAddress, :newAddress)";
+        String sql = "INSERT INTO CUSTOMER(OLD_PREFECTURE_ID, NEW_PREFECTURE_ID, CUSTOMER_NAME, TEL, EMAIL, OLD_ADDRESS, NEW_ADDRESS, MOVING_DATE)"
+                + " VALUES(:oldPrefectureId, :newPrefectureId, :customerName, :tel, :email, :oldAddress, :newAddress, :movingDate)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int resultNum = parameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(customer), keyHolder);
         customer.setCustomerId(keyHolder.getKey().intValue());
@@ -129,10 +133,20 @@ public class EstimateDao {
      * @return 料金[円]
      */
     public int getPricePerTruck(int boxNum) {
-        String sql = "SELECT PRICE FROM TRUCK_CAPACITY WHERE MAX_BOX >= :boxNum ORDER BY PRICE LIMIT 1";
-
-        SqlParameterSource paramSource = new MapSqlParameterSource("boxNum", boxNum);
-        return parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+        int returnPrice = 0;
+        SqlParameterSource paramSource = new MapSqlParameterSource();
+        String sql = "SELECT MAX_BOX FROM TRUCK_CAPACITY ORDER BY MAX_BOX DESC LIMIT 1";
+        int maxCap = parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+        sql = "SELECT PRICE FROM TRUCK_CAPACITY ORDER BY MAX_BOX DESC LIMIT 1";
+        int maxPrice = parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+        if(boxNum>maxCap){
+            returnPrice = maxPrice * (boxNum / maxCap);
+            boxNum = boxNum % maxCap;
+        }
+        paramSource = new MapSqlParameterSource("boxNum", boxNum);
+        sql = "SELECT PRICE FROM TRUCK_CAPACITY WHERE MAX_BOX >= :boxNum ORDER BY PRICE LIMIT 1";
+        returnPrice += parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+        return returnPrice;
     }
 
     /**
@@ -146,5 +160,32 @@ public class EstimateDao {
 
         SqlParameterSource paramSource = new MapSqlParameterSource("serviceId", serviceId);
         return parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+    }
+
+    /**
+     * 季節係数を計算する
+     *
+     * @param movingDate 引っ越し日
+     * @return 季節係数
+     */
+    public double getSeasonCoefficient(String movingDate) {
+        double seasonCoefficient = 1.0;
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date movingDate_date = dateFormat.parse(movingDate);
+            Calendar movingDate_calendar = Calendar.getInstance();
+            movingDate_calendar.setTime(movingDate_date);
+            int movingMonth = movingDate_calendar.get(Calendar.MONTH) + 1; // calendarのmonthは0始まり
+            if(movingMonth==3 || movingMonth==4){
+                seasonCoefficient = 1.5;
+            }else if(movingMonth==9) {
+                seasonCoefficient = 1.2;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return seasonCoefficient;
     }
 }
