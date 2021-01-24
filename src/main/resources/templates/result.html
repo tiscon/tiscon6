@@ -17,6 +17,25 @@
     <h1>概算お見積り結果</h1>
     <div class="col-sm-12">
       <h2>概算お見積り結果は<span th:text="${price}"></span>円です。</h2>
+      <h4>お見積り内訳</h4>
+      <table class="table table-bordered">
+        <col span="1" style="background-color: #A9B7C7;">
+        <col span="2" style="background-color: #FFFFFF;">
+        <tbody>
+        <tr>
+          <th style="width: 40%">距離費用</th>
+          <td><span th:text="*{distancePrice}"></span></td>
+        </tr>
+        <tr>
+          <th>荷物費用</th>
+          <td><span th:text="*{cargoPrice}"></span></td>
+        </tr>
+        <tr>
+          <th>オプション費用</th>
+          <td><span th:text="*{optionPrice}"></span></td>
+        </tr>
+        </tbody>
+      </table>
       <h4>個人情報</h4>
       <table class="table table-bordered">
         <col span="1" style="background-color: #A9B7C7;">
