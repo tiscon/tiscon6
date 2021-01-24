@@ -91,9 +91,13 @@ public class EstimateService {
         if (dto.getWashingMachineInstallation()) {
             priceForOptionalService = estimateDAO.getPricePerOptionalService(OptionalServiceType.WASHING_MACHINE.getCode());
         }
-        System.out.print(priceForOptionalService);
-        Integer returnInt[] = {priceForDistance + pricePerTruck + priceForOptionalService,priceForDistance,pricePerTruck,priceForOptionalService};
+        //System.out.print(priceForOptionalService);
+        double seasonCoefficient = estimateDAO.getSeasonCoefficient(dto.getMovingDate());
+
+        Integer returnInt[] = {(int)((priceForDistance + pricePerTruck) * seasonCoefficient + priceForOptionalService),
+                               (int)(priceForDistance*seasonCoefficient),(int)(pricePerTruck*seasonCoefficient),priceForOptionalService};
         return returnInt;
+        //return (int)((priceForDistance + pricePerTruck) * seasonCoefficient + priceForOptionalService);
     }
 
     /**
